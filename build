@@ -1,0 +1,4 @@
+#!/bin/bash -i
+Target=$1
+shift 1
+make "--dir=bin/${Target}" $@
