@@ -49,7 +49,8 @@ namespace Reflection{
             using difference_type=std::ptrdiff_t;
             using iterator=nstd::iterator_adapter<IteratorBase, value_type, std::random_access_iterator_tag, reference_type, difference_type>;
             using const_iterator=nstd::iterator_adapter<IteratorBase, value_type, std::random_access_iterator_tag, const_reference_type, difference_type>;
-            StackTrace(size_t N);
+            StackTrace();
+            StackTrace(size_t N, size_t skip=0);
             StackTrace(const StackTrace &that);
             StackTrace(StackTrace &&that);
             StackTrace &operator=(const StackTrace &that);
@@ -70,7 +71,10 @@ namespace Reflection{
             inline size_type size() const{
                 return end_-begin_;
             }
-            inline value_type operator[](size_t i){
+            inline value_type &operator[](size_t i){
+                return begin_[i];
+            }
+            inline const value_type &operator[](size_t i) const{
                 return begin_[i];
             }
             inline bool empty() const{
@@ -82,6 +86,6 @@ namespace Reflection{
                 return;
             }
         private:
-            pointer_type begin_, end_;
+            pointer_type alloc_, begin_, end_;
     };
 }

@@ -18,38 +18,42 @@
 #include <cstdlib>
 #include <execinfo.h>
 namespace Reflection{
-    StackTrace::StackTrace(size_t N):
-    begin_(reinterpret_cast<void**>(std::malloc(sizeof(CodePointer)*N))),
-    end_(begin_+backtrace(begin_, N)){
+    StackTrace::StackTrace(size_t N, size_t skip):
+    alloc_(reinterpret_cast<void**>(std::malloc(sizeof(CodePointer)*(N+skip)))),
+    begin_(alloc_+skip+1),end_(alloc_+backtrace(alloc_, N)){
         return;
     }
     StackTrace::StackTrace(const StackTrace &that):
-    begin_(reinterpret_cast<void**>(std::malloc(sizeof(CodePointer)*that.size()))),
-    end_(std::copy(that.begin_, that.end_, begin_)){
+    alloc_(reinterpret_cast<void**>(std::malloc(sizeof(CodePointer)*that.size()))),
+    begin_(alloc_),end_(std::copy(that.begin_, that.end_, begin_)){
         return;
     }
     StackTrace::StackTrace(StackTrace &&that):
+    alloc_(that.alloc_),
     begin_(that.begin_),
     end_(that.end_){
+        that.alloc_=nullptr;
         that.begin_=nullptr;
         that.end_=nullptr;
         return;
     }
     StackTrace &StackTrace::operator=(const StackTrace &that){
-        free(begin_);
+        free(alloc_);
         begin_=reinterpret_cast<void**>(std::malloc(sizeof(CodePointer)*that.size()));
         end_=std::copy(that.begin_, that.end_, begin_);
         return *this;
     }
     StackTrace &StackTrace::operator=(StackTrace &&that){
+        alloc_=that.alloc_;
         begin_=that.begin_;
         end_=that.end_;
+        that.alloc_=nullptr;
         that.begin_=nullptr;
         that.end_=nullptr;
         return *this;
     }
     StackTrace::~StackTrace(){
-        free(begin_);
+        free(alloc_);
         return;
     }
 }
