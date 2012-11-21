@@ -18,6 +18,10 @@
 #include <cstdlib>
 #include <execinfo.h>
 namespace Reflection{
+    StackTrace::StackTrace():
+    alloc_(nullptr),begin_(nullptr),end_(nullptr){
+        return;
+    }
     StackTrace::StackTrace(size_t N, size_t skip):
     alloc_(reinterpret_cast<void**>(std::malloc(sizeof(CodePointer)*(N+skip)))),
     begin_(alloc_+skip+1),end_(alloc_+backtrace(alloc_, N)){

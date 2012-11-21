@@ -23,20 +23,29 @@ namespace Reflection{
             CodePointer *ptr;
             public:
                 constexpr IteratorBase(CodePointer *p):ptr(p){}
-                CodePointer &dereference() const{
+                inline CodePointer &dereference() const{
                     return *ptr;
                 }
-                void increment(){
+                inline void increment(){
                     ptr++;
                     return;
                 }
-                void decrement(){
+                inline void decrement(){
                     ptr--;
                     return;
                 }
-                void advance(std::ptrdiff_t x){
+                inline void advance(std::ptrdiff_t x){
                     ptr+=x;
                     return;
+                }
+                inline bool equals(IteratorBase b) const{
+                    return ptr==b.ptr;
+                }
+                inline bool less(IteratorBase b) const{
+                    return ptr<b.ptr;
+                }
+                inline std::ptrdiff_t difference(IteratorBase b) const{
+                    return ptr-b.ptr;
                 }
         };
         public:
