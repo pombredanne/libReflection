@@ -15,4 +15,8 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CPP
 
+PKG_CHECK_MODULES([libnstd], [libnstd])
+
+AC_CONFIG_FILES([libReflection.pc])
+
 AC_OUTPUT
